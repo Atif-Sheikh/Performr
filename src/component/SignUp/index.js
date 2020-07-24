@@ -49,16 +49,13 @@ class Signup extends Component {
 						<View style={{ alignItems: 'center' }}><Text style={{ fontSize: 20, fontWeight: 'bold' }}>SIGN UP</Text></View>
 						<View style={{ paddingVertical: 50 }}>
 							<View style={{ marginBottom: 15 }}>
-								<Label>Username</Label>
-								<TextInput value='hello' style={{ fontSize: 15, borderColor: 'black', padding: 10, borderRadius: 10, borderWidth: 1, borderStyle: 'solid' }} />
+								<TextInput placeholder="Enter username" style={{ fontSize: 15, borderColor: 'black', padding: 10, borderRadius: 10, borderWidth: 1, borderStyle: 'solid' }} />
 							</View>
 							<View style={{ marginBottom: 15 }}>
-								<Label>Email</Label>
-								<TextInput value='hello' style={{ fontSize: 15, borderColor: 'black', padding: 10, borderRadius: 10, borderWidth: 1, borderStyle: 'solid' }} />
+								<TextInput placeholder="Enter email address" style={{ fontSize: 15, borderColor: 'black', padding: 10, borderRadius: 10, borderWidth: 1, borderStyle: 'solid' }} />
 							</View>
 							<View style={{ marginBottom: 15 }}>
-								<Label>Password</Label>
-								<TextInput secureTextEntry={true} value='world' style={{ fontSize: 15, borderColor: 'black', padding: 10, borderRadius: 10, borderWidth: 1, borderStyle: 'solid' }} />
+								<TextInput placeholder="Enter password" secureTextEntry={true} style={{ fontSize: 15, borderColor: 'black', padding: 10, borderRadius: 10, borderWidth: 1, borderStyle: 'solid' }} />
 							</View>
 							<View>
 								<RadioGroup
@@ -69,14 +66,14 @@ class Signup extends Component {
 									// style={{ paddingTop: 20 }}
 								/>
 							</View>
-							<View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10, height: 40, justifyContent: 'center' }}>
-								<TouchableOpacity onPress={() => navigation.navigate('Login')}>
-									<Text>Already have an account?</Text>
+							<View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10, height: 50, justifyContent: 'center' }}>
+								<TouchableOpacity style={{ height: 30, justifyContent: 'center' }} onPress={() => navigation.navigate('Login')}>
+									<Text style={{ fontWeight: "bold" }}>Already have an account?</Text>
 								</TouchableOpacity>
 							</View>
-							<View style={{ alignItems: 'center', justifyContent: 'center' }}>
-								<Button block style={{ backgroundColor: '#1d7488', borderRadius: 50 }}><Text>SIGN UP</Text></Button>
-							</View>
+							<TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#1d7488', borderRadius: 50, padding: 10 }}>
+								<Text style={{ color: '#fff' }}>SIGN UP</Text>
+							</TouchableOpacity>
 						</View>
 					</View>
 				</ScrollView>
