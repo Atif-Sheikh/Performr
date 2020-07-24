@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { View, Text, SafeAreaView, ScrollView, TextInput } from 'react-native';
-import { Label, Button } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import SplashScreen from 'react-native-splash-screen'
 
 class Signup extends Component {
+
+	componentDidMount() {
+		SplashScreen.hide();
+	};
 
 	render() {
 		const { navigation } = this.props;
@@ -25,7 +29,7 @@ class Signup extends Component {
 								</TouchableOpacity>
 							</View>
 							<TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#1d7488', borderRadius: 50, padding: 10 }}>
-								<Text style={{ color: '#fff' }}>SIGN UP</Text>
+								<Text style={{ color: '#fff' }}>LOGIN</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
