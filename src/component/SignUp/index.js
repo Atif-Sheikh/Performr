@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, SafeAreaView, ScrollView, TextInput, StyleSheet } from 'react-native';
-import { Lable, Label, Button } from 'native-base';
+import { Label, Button } from 'native-base';
 import { RadioGroup } from 'react-native-btr';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
 
 class Signup extends Component {
 	constructor(props) {
@@ -36,6 +38,8 @@ class Signup extends Component {
 		}
 	}
 	render() {
+		const { navigation } = this.props;
+
 		let selectedItem = this.state.radioButtons.find(e => e.checked == true);
 		selectedItem = selectedItem ? selectedItem.value : this.state.radioButtons[0].value;
 		return (
@@ -64,6 +68,11 @@ class Signup extends Component {
 									onPress={radioButtons => this.setState({ radioButtons })}
 									// style={{ paddingTop: 20 }}
 								/>
+							</View>
+							<View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10, height: 40, justifyContent: 'center' }}>
+								<TouchableOpacity onPress={() => navigation.navigate('Login')}>
+									<Text>Already have an account?</Text>
+								</TouchableOpacity>
 							</View>
 							<View style={{ alignItems: 'center', justifyContent: 'center' }}>
 								<Button block style={{ backgroundColor: '#1d7488', borderRadius: 50 }}><Text>SIGN UP</Text></Button>
