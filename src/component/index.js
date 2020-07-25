@@ -5,5 +5,6 @@ import Post from './Post';
 import Profile from './Profile';
 import Message from './Message';
 import Loader from './Loader';
+import Header from './Header';
 
-export {Login, Signup, Home, Post, Profile, Message, Loader};
+export {Login, Signup, Home, Post, Profile, Message, Loader, Header};

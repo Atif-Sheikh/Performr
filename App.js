@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { Platform, StatusBar } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Icon} from 'native-base';
+import {Icon, View} from 'native-base';
 
 import {Login, Signup, Home, Post, Profile, Message} from './src/component';
 
@@ -12,18 +13,24 @@ const Tab = createBottomTabNavigator();
 // console.disableYellowBox = true;
 
 function App() {
+  
+  Platform.OS === 'android' && StatusBar.setBarStyle('light-content', true);
+  Platform.OS === 'android' && StatusBar.setBackgroundColor('#1d7488');
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-        initialRouteName="Login">
-        <Stack.Screen name="Home" component={HomeNavigator} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={{ flex: 1 }}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+          initialRouteName="Login">
+          <Stack.Screen name="Home" component={HomeNavigator} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
   );
 }
 

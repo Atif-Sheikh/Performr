@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, View, TouchableOpacity, Platform, StatusBar, ScrollView } from 'react-native';
 import {
-    Container, Header, Title, Icon, Text, Thumbnail,
+    Container, Title, Icon, Text, Thumbnail,
     Form, Item, Input
 } from "native-base";
-const { height:screenHeight, width:screenWidth } = Dimensions.get('window');
 import ImagePicker from 'react-native-image-picker';
+
+import Header from '../Header';
+
+const { height:screenHeight, width:screenWidth } = Dimensions.get('window');
 
 class Profile extends Component {
     constructor(props) {
@@ -56,11 +59,7 @@ class Profile extends Component {
             };
         });
     };
-    // componentWillReceiveProps(props){
-    //     if(props.update){
-    //         Alert.alert(null, 'Updated', [{text: 'OK', onPress: () => Actions.home()}]);
-    //     };
-    // };
+
     update = () => {
         let { name, number, email, photo, classArray } = this.state
 
@@ -82,19 +81,13 @@ class Profile extends Component {
     };
 
     render() {
-        // console.warn(this.props.user)
+
+        const {navigation} = this.props;
+
         return (
-            // <ScrollView>
             <Container>
-                <Header style={{ backgroundColor: '#1d7488', height: screenHeight / 10, flexDirection: "row", justifyContent: "space-around" }} hasTabs span>
-                    {/* <TouchableOpacity style={{ width: "10%", justifyContent: "center", alignItems: "center" }}>
-                        <Icon name="arrow-back" style={{ color: "#fff" }} />
-                    </TouchableOpacity> */}
-                    <View style={{ width: "90%", justifyContent: "center", alignItems: "center" }}>
-                        <Text style={{ color: "#fff" }}>Edit Profile</Text>
-                    </View>
-                </Header>
-                <View style={{ justifyContent: 'center', alignItems: 'center', width: "100%", height: screenHeight / 6, backgroundColor: "#1d7488" }}>
+              <Header title="Profile" navigation={navigation} />
+                <View style={{ justifyContent: 'center', alignItems: 'center', width: "100%", height: screenHeight / 5, backgroundColor: "#1d7488" }}>
                     <TouchableOpacity onPress={this.imagepicker} style={{ height: 120, width: 120, borderRadius: 60 }}  >
                         <Thumbnail resizeMode="cover" source={this.state.photo ? { uri: this.state.photo } : require("../../assets/face.jpeg")} style={{ height: "100%", width: "100%", borderWidth: 2.0, borderColor: "grey", borderRadius: 60 }} />
                     </TouchableOpacity>
@@ -114,10 +107,13 @@ class Profile extends Component {
                                     <Input ref="number" maxLength={13} keyboardType='numeric' placeholder={this.state.number && null || "No Number Found"} value={this.state.number} onChangeText={(number) => this.setState({ number })} style={styles.inputStyle} />
                                 </Item>
                                 {this.props.loader ? <Loader />
-                                    : <TouchableOpacity onPress={this.update} style={{ borderRadius: 5, width: "100%", height: screenHeight / 13, justifyContent: "center", alignItems: "center", backgroundColor: "#1d7488" }}>
+                                    : <TouchableOpacity style={{ borderRadius: 5, width: "100%", height: screenHeight / 18, justifyContent: "center", alignItems: "center", backgroundColor: "#1d7488" }}>
                                         <Text style={{ color: "#fff" }}>Update Profile</Text>
                                     </TouchableOpacity>
                                 }
+                                <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ borderRadius: 5, width: "100%", height: screenHeight / 18, justifyContent: "center", alignItems: "center", backgroundColor: "#1d7488" }}>
+                                    <Text style={{ color: "#fff" }}>Logout</Text>
+                                </TouchableOpacity>
                             </View>
                         </Form>
                     </View>
