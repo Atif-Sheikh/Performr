@@ -7,9 +7,10 @@ import {
   TextInput,
   StyleSheet,
 } from 'react-native';
-import {Label, Button} from 'native-base';
 import {RadioGroup} from 'react-native-btr';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+
+import Header from '../Header';
 
 class Signup extends Component {
   constructor(props) {
@@ -51,6 +52,7 @@ class Signup extends Component {
     return (
       <SafeAreaView
         style={{flex: 1, backgroundColor: 'rgba(29, 138, 137,0.5)'}}>
+        <Header title="Signup" navigation={navigation} />
         <ScrollView>
           <View
             style={{
@@ -105,7 +107,8 @@ class Signup extends Component {
               </View>
               <View>
                 <RadioGroup
-                  color="#31ab8c"
+				  color="#1d7488"
+				  style={{ flexDirection: 'row', height: 50 }}
                   labelStyle={{fontSize: 14}}
                   radioButtons={this.state.radioButtons}
                   onPress={(radioButtons) => this.setState({radioButtons})}
