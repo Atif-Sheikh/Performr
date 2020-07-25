@@ -107,12 +107,11 @@ class Signup extends Component {
               </View>
               <View>
                 <RadioGroup
-				  color="#1d7488"
-				  style={{ flexDirection: 'row', height: 50 }}
+                  color="#1d7488"
+                  style={{flexDirection: 'row', height: 50}}
                   labelStyle={{fontSize: 14}}
                   radioButtons={this.state.radioButtons}
                   onPress={(radioButtons) => this.setState({radioButtons})}
-                  // style={{ paddingTop: 20 }}
                 />
               </View>
               <View
