@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, SafeAreaView, ScrollView, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SplashScreen from 'react-native-splash-screen';
-import { Header } from '..';
+import {Header} from '..';
 
 class Signup extends Component {
   componentDidMount() {
@@ -14,7 +14,7 @@ class Signup extends Component {
     return (
       <SafeAreaView
         style={{flex: 1, backgroundColor: 'rgba(29, 138, 137,0.5)'}}>
-		<Header title="Login" navigation={navigation} />
+        <Header title="Login" navigation={navigation} />
         <ScrollView>
           <View
             style={{

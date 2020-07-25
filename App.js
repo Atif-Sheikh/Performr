@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StatusBar } from 'react-native';
+import {Platform, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -10,15 +10,14 @@ import {Login, Signup, Home, Post, Profile, Message} from './src/component';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// console.disableYellowBox = true;
+console.disableYellowBox = true;
 
 function App() {
-  
   Platform.OS === 'android' && StatusBar.setBarStyle('light-content', true);
   Platform.OS === 'android' && StatusBar.setBackgroundColor('#1d7488');
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
