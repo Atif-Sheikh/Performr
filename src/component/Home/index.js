@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text} from 'react-native';
+import Loader from '../Loader';
 
 export default function Home() {
   return (

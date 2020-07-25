@@ -32,21 +32,21 @@ function HomeNavigator() {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size, tintColor}) => {
+        tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'ios-man' : 'ios-man-outline';
-          } else if (route.name === 'Message') {
+          } else if (route.name === 'Messages') {
             iconName = focused ? 'chatbox' : 'chatbox-outline';
           } else if (route.name === 'Post') {
             iconName = focused ? 'add-circle-sharp' : 'add-outline';
           }
 
           // You can return any component that you like here!
-          return <Icon name={iconName} size={25} style={{ color: color }} />;
+          return <Icon name={iconName} size={size} style={{color: color}} />;
         },
       })}
       tabBarOptions={{
@@ -55,7 +55,7 @@ function HomeNavigator() {
       }}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Post" component={Post} />
-      <Tab.Screen name="Message" component={Message} />
+      <Tab.Screen name="Messages" component={Message} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
