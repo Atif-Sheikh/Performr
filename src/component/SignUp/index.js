@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {RadioGroup} from 'react-native-btr';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import auth from '@react-native-firebase/auth';
 
 import Header from '../Header';
 
@@ -39,9 +40,39 @@ class Signup extends Component {
           flexDirection: 'row',
           size: 11,
         },
-      ],
+	  ],
+	  
+	  displayName: '',
+	  email: '',
+      password: '',
+      loading: false,
     };
-  }
+  };
+
+
+  signup = () => {
+    try {
+      const {navigation} = this.props;
+      const {email, password} = this.state;
+      auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(async (user) => {
+			console.log(user, "USer")
+          if (user) {
+            navigation.navigate('Home');
+          } else {
+            // Toast.show('No user found!', Toast.SHORT);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  };
+
   render() {
     const {navigation} = this.props;
 
@@ -75,7 +106,8 @@ class Signup extends Component {
                     borderRadius: 10,
                     borderWidth: 1,
                     borderStyle: 'solid',
-                  }}
+				  }}
+				  onChange={(text) => this.setState({ displayName: text })}
                 />
               </View>
               <View style={{marginBottom: 15}}>
@@ -88,7 +120,8 @@ class Signup extends Component {
                     borderRadius: 10,
                     borderWidth: 1,
                     borderStyle: 'solid',
-                  }}
+				  }}
+				  onChange={(text) => this.setState({ email: text })}
                 />
               </View>
               <View style={{marginBottom: 15}}>
@@ -102,7 +135,8 @@ class Signup extends Component {
                     borderRadius: 10,
                     borderWidth: 1,
                     borderStyle: 'solid',
-                  }}
+				  }}
+				  onChange={(text) => this.setState({ password: text })}
                 />
               </View>
               <View>
@@ -131,6 +165,7 @@ class Signup extends Component {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
+			  	onPress={this.signup}
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',

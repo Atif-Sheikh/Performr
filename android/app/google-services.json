@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "642424147026",
+    "firebase_url": "https://performr-714dc.firebaseio.com",
+    "project_id": "performr-714dc",
+    "storage_bucket": "performr-714dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642424147026:android:be996cb019529ea525a38b",
+        "android_client_info": {
+          "package_name": "com.performr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642424147026-r4svgkic1oqo0qqj6slmikglna5c1mfr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLZT4JJ7GuDf6PUZuB1wKueWYhFaDsZpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642424147026-r4svgkic1oqo0qqj6slmikglna5c1mfr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

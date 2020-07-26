@@ -2,12 +2,45 @@ import React, {Component} from 'react';
 import {View, Text, SafeAreaView, ScrollView, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SplashScreen from 'react-native-splash-screen';
-import {Header} from '..';
+import auth from '@react-native-firebase/auth';
 
-class Signup extends Component {
+import {Header} from '../';
+
+class Login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      email: '',
+      password: '',
+      loading: false,
+    };
+  }
+
   componentDidMount() {
     SplashScreen.hide();
   }
+
+  login = () => {
+    try {
+      const {navigation} = this.props;
+      const {email, password} = this.state;
+      auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(async (user) => {
+          if (user) {
+            navigation.navigate('Home');
+          } else {
+            // Toast.show('No user found!', Toast.SHORT);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  };
 
   render() {
     const {navigation} = this.props;
@@ -38,6 +71,7 @@ class Signup extends Component {
                     borderWidth: 1,
                     borderStyle: 'solid',
                   }}
+                  onChange={(text) => this.setState({email: text})}
                 />
               </View>
               <View style={{marginBottom: 5}}>
@@ -52,6 +86,7 @@ class Signup extends Component {
                     borderWidth: 1,
                     borderStyle: 'solid',
                   }}
+                  onChange={(text) => this.setState({password: text})}
                 />
               </View>
               <View
@@ -71,7 +106,7 @@ class Signup extends Component {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Home')}
+                onPress={this.login}
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -88,4 +123,4 @@ class Signup extends Component {
     );
   }
 }
-export default Signup;
+export default Login;

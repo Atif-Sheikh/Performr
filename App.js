@@ -5,12 +5,15 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon, View} from 'native-base';
 
+import '@react-native-firebase/app';
+import'@react-native-firebase/auth';
+
 import {Login, Signup, Home, Post, Profile, Message} from './src/component';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-console.disableYellowBox = true;
+// console.disableYellowBox = true;
 
 function App() {
   Platform.OS === 'android' && StatusBar.setBarStyle('light-content', true);
