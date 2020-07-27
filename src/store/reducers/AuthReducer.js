@@ -12,6 +12,13 @@ const initialState = {
 
 const AuthReducer = createReducer(initialState, {
 
+    [TYPES.IS_LOADING]: (state, action) => {
+        return {
+            ...state,
+            isLoading: true
+        }
+    },
+    
     [TYPES.LOG_OUT]: (state, action) => {
         return {
             ...state,
@@ -22,7 +29,7 @@ const AuthReducer = createReducer(initialState, {
             userMeta: {},
         }
     },
-    [TYPES.FETCHING_LOGIN_REQUEST]: (state, action) => {
+    [TYPES.FETCHING_LOGIN]: (state, action) => {
         return {
             ...state,
             isLoading: true

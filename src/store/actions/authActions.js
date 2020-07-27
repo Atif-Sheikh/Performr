@@ -1,11 +1,15 @@
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import Toast from 'react-native-simple-toast';
+
+import TYPES from '../constants';
+
 export const fetchLogout = () => {
   return async (dispatch) => {
-    NavigationService.navigateAndReset('Start');
+    NavigationService.navigateAndReset('Login');
     dispatch(R_logout());
-    let keys = ['$leppiUserId', '$leppiSkipWelcome', '$leppiFCMToken'];
     try {
-      await AsyncStorage.multiRemove(keys);
-      await firebase.auth().signOut();
+      await auth().signOut();
     } catch (e) {
       dispatch(isLoading(false));
     }
@@ -28,23 +32,14 @@ export const fetchingLoginFailure = (error) => ({
 
 export const fetchLogin = (data, navigate) => {
   return async (dispatch) => {
-    dispatch(fetchingLoginRequest());
     const {email, password} = data;
     // //console.log('===== fetchLogin');
     try {
-      await firebase
-        .auth()
+      await auth()
         .signInWithEmailAndPassword(email, password)
         .then(async (user) => {
-          await AsyncStorage.setItem('$leppiUserId', user.user.uid);
           dispatch(fetchingLoginSuccess(user));
-          let skipWelcome = await AsyncStorage.getItem('$leppiSkipWelcome');
-          if (skipWelcome === '1') {
-            dispatch(updateMenu(MENU_TYPES.HOME));
-            navigate('Home');
-          } else {
-            navigate('Welcome');
-          }
+          navigate('Home');
         })
         .catch((error) => {
           const {code, message} = error;
@@ -54,6 +49,35 @@ export const fetchLogin = (data, navigate) => {
         });
     } catch (e) {
       dispatch(isLoading(false));
+    }
+  };
+};
+
+export const fetchSignup = (data, navigate) => {
+  return async (dispatch) => {
+    const {email, password, displayName, userType} = data;
+    try {
+      await auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(async ({user: { _user: { uid } }}) => {
+          database()
+            .ref(`users/${uid}`)
+            .set(data)
+            .then(() => {
+                navigate('Home');
+                Toast.show('Successfully created user', Toast.SHORT);
+            })
+            .catch((err) => {
+                Toast.show(err, Toast.SHORT);
+            })
+        })
+        .catch((error) => {
+          const {code, message} = error;
+          const errorMessage = message.replace(code, '').replace('[]', '');
+          Toast.show(errorMessage, Toast.SHORT);
+        });
+    } catch (e) {
+        console.log(e, "RREEERR")
     }
   };
 };

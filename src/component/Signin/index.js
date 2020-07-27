@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {View, Text, SafeAreaView, ScrollView, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SplashScreen from 'react-native-splash-screen';
-import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-simple-toast';
+import {connect} from 'react-redux';
 
+import * as authActions from '../../store/actions/authActions';
 import {Header} from '../';
 
 class Login extends Component {
@@ -21,24 +22,15 @@ class Login extends Component {
     SplashScreen.hide();
   }
 
-  login = () => {
+  login = async () => {
     try {
-      const {navigation} = this.props;
+      const {
+        navigation: {navigate},
+        fetchLogin
+      } = this.props;
       const {email, password} = this.state;
-      auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(async (user) => {
-          if (user) {
-            navigation.navigate('Home');
-          } else {
-            // Toast.show('No user found!', Toast.SHORT);
-          }
-        })
-        .catch((error) => {
-          const {code, message} = error;
-          const errorMessage = message.replace(code, '').replace('[]', '');
-          Toast.show(errorMessage, Toast.SHORT);
-        });
+
+      await fetchLogin({email, password}, navigate);
     } catch (err) {
       Toast.show(err, Toast.SHORT);
     }
@@ -125,4 +117,18 @@ class Login extends Component {
     );
   }
 }
-export default Login;
+
+function mapStateToProps(state, props) {
+  return {
+    authErrorMessage: state.AuthReducer.authErrorMessage,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchLogin: (type, navigate) =>
+      dispatch(authActions.fetchLogin(type, navigate)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

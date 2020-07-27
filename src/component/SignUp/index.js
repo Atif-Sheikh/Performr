@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import {RadioGroup} from 'react-native-btr';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import auth from '@react-native-firebase/auth';
-import Toast from 'react-native-simple-toast';
+import {connect} from 'react-redux';
 
+import * as authActions from '../../store/actions/authActions';
 import Header from '../Header';
 
 class Signup extends Component {
@@ -50,24 +50,23 @@ class Signup extends Component {
     };
   }
 
-  signup = () => {
+  signup = async () => {
     try {
-      const {navigation} = this.props;
-      const {email, password} = this.state;
-      auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(async (user) => {
-          if (user) {
-            navigation.navigate('Home');
-          } else {
-            // Toast.show('No user found!', Toast.SHORT);
-          }
-        })
-        .catch((error) => {
-          const {code, message} = error;
-          const errorMessage = message.replace(code, '').replace('[]', '');
-          Toast.show(errorMessage, Toast.SHORT);
-        });
+      const {
+        navigation: {navigate},
+        fetchSignup,
+      } = this.props;
+      const {email, password, displayName, radioButtons} = this.state;
+
+      let selectedItem = this.state.radioButtons.find((e) => e.checked == true);
+      selectedItem = selectedItem
+        ? selectedItem.value
+        : this.state.radioButtons[0].value;
+
+      await fetchSignup(
+        {email, password, displayName, userType: selectedItem},
+        navigate,
+      );
     } catch (err) {
       Toast.show(err, Toast.SHORT);
     }
@@ -182,7 +181,20 @@ class Signup extends Component {
     );
   }
 }
-export default Signup;
+function mapStateToProps(state, props) {
+  return {
+    authErrorMessage: state.AuthReducer.authErrorMessage,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchSignup: (data, userMeta) =>
+      dispatch(authActions.fetchSignup(data, userMeta)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);
 
 const styles = StyleSheet.create({
   MainContainer: {
