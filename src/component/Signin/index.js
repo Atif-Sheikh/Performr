@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 
 import * as authActions from '../../store/actions/authActions';
 import {Header} from '../';
+import Loader from '../Loader';
 
 class Login extends Component {
   constructor() {
@@ -26,11 +27,16 @@ class Login extends Component {
     try {
       const {
         navigation: {navigate},
-        fetchLogin
+        fetchLogin,
       } = this.props;
       const {email, password} = this.state;
 
-      await fetchLogin({email, password}, navigate);
+      if (email && password) {
+        this.setState({loading: true});
+        await fetchLogin({email, password, callback: () => this.setState({ loading: false })}, navigate);
+      } else {
+        Toast.show('Please enter fields!');
+      }
     } catch (err) {
       Toast.show(err, Toast.SHORT);
     }
@@ -38,6 +44,8 @@ class Login extends Component {
 
   render() {
     const {navigation} = this.props;
+    const {loading} = this.state;
+
     return (
       <SafeAreaView
         style={{flex: 1, backgroundColor: 'rgba(29, 138, 137,0.5)'}}>
@@ -99,17 +107,21 @@ class Login extends Component {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={this.login}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#1d7488',
-                  borderRadius: 50,
-                  padding: 10,
-                }}>
-                <Text style={{color: '#fff'}}>LOGIN</Text>
-              </TouchableOpacity>
+              {loading ? (
+                <Loader />
+              ) : (
+                <TouchableOpacity
+                  onPress={this.login}
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#1d7488',
+                    borderRadius: 50,
+                    padding: 10,
+                  }}>
+                  <Text style={{color: '#fff'}}>LOGIN</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </ScrollView>

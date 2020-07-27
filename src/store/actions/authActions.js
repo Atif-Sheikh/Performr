@@ -32,30 +32,40 @@ export const fetchingLoginFailure = (error) => ({
 
 export const fetchLogin = (data, navigate) => {
   return async (dispatch) => {
-    const {email, password} = data;
+    const {email, password, callback} = data;
     // //console.log('===== fetchLogin');
     try {
       await auth()
         .signInWithEmailAndPassword(email, password)
         .then(async (user) => {
-          dispatch(fetchingLoginSuccess(user));
+          callback();
+        //   dispatch(fetchingLoginSuccess(user));
           navigate('Home');
         })
         .catch((error) => {
           const {code, message} = error;
           const errorMessage = message.replace(code, '').replace('[]', '');
-          dispatch(fetchingLoginFailure(errorMessage));
+          callback();
           Toast.show(errorMessage, Toast.SHORT);
         });
     } catch (e) {
-      dispatch(isLoading(false));
+      Toast.show(e, Toast.SHORT);
+      callback();
     }
   };
 };
 
 export const fetchSignup = (data, navigate) => {
   return async (dispatch) => {
-    const {email, password, displayName, selectedItem, contactNo, address, callback} = data;
+    const {
+      email,
+      password,
+      displayName,
+      selectedItem,
+      contactNo,
+      address,
+      callback,
+    } = data;
     try {
       await auth()
         .createUserWithEmailAndPassword(email, password)
@@ -67,7 +77,14 @@ export const fetchSignup = (data, navigate) => {
           }) => {
             database()
               .ref(`users/${uid}`)
-              .set({ email, password, displayName, selectedItem, contactNo, address })
+              .set({
+                email,
+                password,
+                displayName,
+                selectedItem,
+                contactNo,
+                address,
+              })
               .then(() => {
                 callback();
                 Toast.show('Successfully created user', Toast.SHORT);
