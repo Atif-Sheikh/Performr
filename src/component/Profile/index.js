@@ -4,8 +4,6 @@ import {
   Dimensions,
   View,
   TouchableOpacity,
-  Platform,
-  StatusBar,
   ScrollView,
 } from 'react-native';
 import {
@@ -19,8 +17,11 @@ import {
   Input,
 } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
+import {connect} from 'react-redux';
 
+import * as authActions from '../../store/actions/authActions';
 import Header from '../Header';
+import { Loader } from '..';
 
 const {height: screenHeight, width: screenWidth} = Dimensions.get('window');
 
@@ -32,10 +33,13 @@ class Profile extends Component {
       photos: false,
       friends: false,
       pickerModal: false,
-      email: 'Test@gmail.com',
-      name: 'Test',
-      photo: '',
-      number: '+923002410353',
+      email: props.userMeta.email,
+      name: props.userMeta.displayName,
+      photo: props.userMeta.thumbnail,
+      number: props.userMeta.contactNo,
+      address: props.userMeta.address,
+    
+      imageUploading: false
     };
   }
 
@@ -64,28 +68,20 @@ class Profile extends Component {
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        this.setState({
-          photo: source.uri,
-        });
+        this.setState(
+          {
+            photo: source.uri,
+            imageUploading: true
+          },
+          () => {
+            this.props.uploadPhoto(source.uri, this.props.userId, callback = () => this.setState({ imageUploading: false }));
+          },
+        );
       }
     });
   };
 
-  update = () => {
-    let {name, number, email, photo, classArray} = this.state;
-
-    let obj = {
-      userName: name,
-      number,
-      email,
-      photo,
-      classArray,
-    };
-    if (photo == this.props.user.photo) {
-      delete obj['photo'];
-    }
-    this.props.UpdateProfile(obj);
-  };
+  update = () => {};
 
   _focusNextField = (nextField) => {
     this.refs[nextField]._root.focus();
@@ -93,6 +89,7 @@ class Profile extends Component {
 
   render() {
     const {navigation} = this.props;
+    const { imageUploading } = this.state;
 
     return (
       <Container>
@@ -105,25 +102,31 @@ class Profile extends Component {
             height: screenHeight / 5,
             backgroundColor: '#1d7488',
           }}>
-          <TouchableOpacity
-            onPress={this.imagepicker}
-            style={{height: 120, width: 120, borderRadius: 60}}>
-            <Thumbnail
-              resizeMode="cover"
-              source={
-                this.state.photo
-                  ? {uri: this.state.photo}
-                  : require('../../assets/face.jpeg')
-              }
-              style={{
-                height: '100%',
-                width: '100%',
-                borderWidth: 2.0,
-                borderColor: 'grey',
-                borderRadius: 60,
-              }}
-            />
-          </TouchableOpacity>
+            {
+              imageUploading
+              ?
+              <Loader />
+              :
+              <TouchableOpacity
+                onPress={this.imagepicker}
+                style={{height: 120, width: 120, borderRadius: 60}}>
+                <Thumbnail
+                  resizeMode="cover"
+                  source={
+                    this.state.photo
+                      ? {uri: this.state.photo}
+                      : require('../../assets/face.jpeg')
+                  }
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    borderWidth: 2.0,
+                    borderColor: 'grey',
+                    borderRadius: 60,
+                  }}
+                />
+              </TouchableOpacity>
+            }
           <Title style={{paddingTop: 10}}>{this.state.name}</Title>
         </View>
         <ScrollView style={{height: screenHeight / 1.6}}>
@@ -159,12 +162,24 @@ class Profile extends Component {
                   <Input
                     ref="number"
                     maxLength={13}
+                    onSubmitEditing={() => this._focusNextField('address')}
                     keyboardType="numeric"
                     placeholder={
                       (this.state.number && null) || 'No Number Found'
                     }
                     value={this.state.number}
                     onChangeText={(number) => this.setState({number})}
+                    style={styles.inputStyle}
+                  />
+                </Item>
+                <Item style={styles.item} regular>
+                  <Input
+                    ref="address"
+                    placeholder={
+                      (this.state.address && null) || 'No Address Found'
+                    }
+                    value={this.state.address}
+                    onChangeText={(address) => this.setState({address})}
                     style={styles.inputStyle}
                   />
                 </Item>
@@ -217,4 +232,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+function mapStateToProps(state, props) {
+  return {
+    userMeta: state.AuthReducer.userMeta,
+    userId: state.AuthReducer.userId,
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    uploadPhoto: (imageSrc, userId, callback) =>
+      dispatch(authActions.uploadImage(imageSrc, userId, callback)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

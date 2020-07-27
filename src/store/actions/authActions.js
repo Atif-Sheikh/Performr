@@ -1,8 +1,10 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
+import firebase from '@react-native-firebase/app';
 import Toast from 'react-native-simple-toast';
 
-import TYPES from '../constants';
+import * as TYPES from '../constants';
 
 export const fetchLogout = () => {
   return async (dispatch) => {
@@ -14,6 +16,35 @@ export const fetchLogout = () => {
       dispatch(isLoading(false));
     }
   };
+};
+
+export const uploadImage = (imageSrc, userId, callback) => {
+    return async (dispatch) => {
+        try {
+            const sessionId = `images-${new Date().getTime()}`;
+            const imageRef = firebase.storage().ref(sessionId);
+            imageRef.putFile(imageSrc).then(async () => {
+                let downloadUrl = await imageRef.getDownloadURL();
+                
+                database()
+                .ref(`users/${userId}`)
+                .update({
+                    thumbnail: downloadUrl,
+                })
+                .then(() => {
+                    callback();
+                    Toast.show('Profile Picture successfull updated!');
+                })
+                .catch((err) => {
+                    callback()
+                    Toast.show(err);
+                })
+            })
+        }catch(err) {
+            callback();
+            console.log(err);
+        } 
+    };
 };
 
 export const fetchingLoginRequest = () => ({
@@ -37,11 +68,25 @@ export const fetchLogin = (data, navigate) => {
     try {
       await auth()
         .signInWithEmailAndPassword(email, password)
-        .then(async (user) => {
-          callback();
-        //   dispatch(fetchingLoginSuccess(user));
-          navigate('Home');
-        })
+        .then(
+          async ({
+            user: {
+              _user: {uid},
+            },
+          }) => {
+            database()
+              .ref(`users/${uid}`)
+              .once('value')
+              .then((snapshot) => {
+                console.log('User data: ', snapshot.val());
+                dispatch(
+                  fetchingLoginSuccess({...snapshot.val(), userId: uid}),
+                );
+                callback();
+                navigate('Home');
+              });
+          },
+        )
         .catch((error) => {
           const {code, message} = error;
           const errorMessage = message.replace(code, '').replace('[]', '');
@@ -61,10 +106,11 @@ export const fetchSignup = (data, navigate) => {
       email,
       password,
       displayName,
-      selectedItem,
+      userType,
       contactNo,
       address,
       callback,
+      thumbnail,
     } = data;
     try {
       await auth()
@@ -81,11 +127,25 @@ export const fetchSignup = (data, navigate) => {
                 email,
                 password,
                 displayName,
-                selectedItem,
+                userType,
                 contactNo,
                 address,
+                thumbnail,
               })
               .then(() => {
+                dispatch(
+                  fetchingLoginSuccess({
+                    email,
+                    password,
+                    displayName,
+                    userType,
+                    contactNo,
+                    address,
+                    thumbnail,
+                    userId: uid,
+                  }),
+                );
+
                 callback();
                 Toast.show('Successfully created user', Toast.SHORT);
                 navigate('Home');

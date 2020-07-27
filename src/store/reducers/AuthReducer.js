@@ -43,9 +43,12 @@ const AuthReducer = createReducer(initialState, {
         }
     },
     [TYPES.FETCHING_LOGIN_SUCCESS]: (state, action) => {
+        const { userId} = action.payload;
         return {
             ...state,
             isLoading: false,
+            userId: userId,
+            userMeta: { ...action.payload }
         }
     },
     [TYPES.FETCHING_SIGNUP_REQUEST]: (state, action) => {

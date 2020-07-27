@@ -83,6 +83,7 @@ class Signup extends Component {
             userType: selectedItem,
             contactNo,
             address,
+            thumbnail: '',
             callback: () => this.setState({loading: false}),
           },
           navigate,
