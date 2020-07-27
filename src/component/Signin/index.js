@@ -71,7 +71,7 @@ class Login extends Component {
                     borderWidth: 1,
                     borderStyle: 'solid',
                   }}
-                  onChange={(text) => this.setState({email: text})}
+                  onChangeText={(text) => this.setState({email: text})}
                 />
               </View>
               <View style={{marginBottom: 5}}>
@@ -86,7 +86,7 @@ class Login extends Component {
                     borderWidth: 1,
                     borderStyle: 'solid',
                   }}
-                  onChange={(text) => this.setState({password: text})}
+                  onChangeText={(text) => this.setState({password: text})}
                 />
               </View>
               <View

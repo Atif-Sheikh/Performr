@@ -40,15 +40,14 @@ class Signup extends Component {
           flexDirection: 'row',
           size: 11,
         },
-	  ],
-	  
-	  displayName: '',
-	  email: '',
+      ],
+
+      displayName: '',
+      email: '',
       password: '',
       loading: false,
     };
-  };
-
+  }
 
   signup = () => {
     try {
@@ -57,7 +56,7 @@ class Signup extends Component {
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(async (user) => {
-			console.log(user, "USer")
+          console.log(user, 'USer');
           if (user) {
             navigation.navigate('Home');
           } else {
@@ -106,8 +105,8 @@ class Signup extends Component {
                     borderRadius: 10,
                     borderWidth: 1,
                     borderStyle: 'solid',
-				  }}
-				  onChange={(text) => this.setState({ displayName: text })}
+                  }}
+                  onChangeText={(text) => this.setState({displayName: text})}
                 />
               </View>
               <View style={{marginBottom: 15}}>
@@ -120,8 +119,8 @@ class Signup extends Component {
                     borderRadius: 10,
                     borderWidth: 1,
                     borderStyle: 'solid',
-				  }}
-				  onChange={(text) => this.setState({ email: text })}
+                  }}
+                  onChangeText={(text) => this.setState({email: text})}
                 />
               </View>
               <View style={{marginBottom: 15}}>
@@ -135,8 +134,8 @@ class Signup extends Component {
                     borderRadius: 10,
                     borderWidth: 1,
                     borderStyle: 'solid',
-				  }}
-				  onChange={(text) => this.setState({ password: text })}
+                  }}
+                  onChangeText={(text) => this.setState({password: text})}
                 />
               </View>
               <View>
@@ -165,7 +164,7 @@ class Signup extends Component {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
-			  	onPress={this.signup}
+                onPress={this.signup}
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
