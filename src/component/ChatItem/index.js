@@ -7,16 +7,23 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
+import {Thumbnail} from 'native-base';
 
 const {width, height} = Dimensions.get('window');
 
 class ChatItem extends Component {
   async _goToDetail() {
     const {navigate} = this.props.navigation;
-    const {chatRoom, userId} = this.props;
+    const {userData, userId} = this.props;
   }
 
   render() {
+    const {
+      userData: {
+        item: {displayName, email, thumbnail},
+      },
+    } = this.props;
+    console.log(this.props, 'PROPS');
     return (
       <TouchableOpacity
         onPress={() => this._goToDetail()}
@@ -24,19 +31,23 @@ class ChatItem extends Component {
         <View style={styles.chatContent}>
           <View style={styles.userInfoRow}>
             <View style={styles.thumbnail}>
-              <Image
-                source={require('../../assets/face.jpeg')}
+              <Thumbnail
+                source={
+                  thumbnail
+                    ? {uri: thumbnail}
+                    : require('../../assets/face.jpeg')
+                }
                 style={styles.thumbImage}
               />
             </View>
             <View style={styles.userInfo}>
-              <Text style={styles.usernameTxt}>username</Text>
-              <Text style={styles.locationTxt}>Email</Text>
+              <Text style={styles.usernameTxt}>{displayName}</Text>
+              <Text style={styles.locationTxt}>{email}</Text>
             </View>
           </View>
         </View>
         <View style={styles.dateView}>
-          <Text style={styles.dateTxt}>lastMsgTime</Text>
+          <Text style={styles.dateTxt}></Text>
         </View>
       </TouchableOpacity>
     );
@@ -54,7 +65,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingLeft: 14,
     position: 'relative',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   chatContent: {
@@ -86,10 +97,10 @@ const styles = StyleSheet.create({
   thumbImage: {
     width: 70,
     height: 70,
-    borderRadius: (70) / 2,
+    borderRadius: 70 / 2,
   },
   userInfo: {
-    paddingLeft: 30
+    paddingLeft: 30,
   },
   usernameTxt: {
     fontSize: 13,

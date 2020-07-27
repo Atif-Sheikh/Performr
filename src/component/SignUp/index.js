@@ -174,6 +174,7 @@ class Signup extends Component {
                     borderWidth: 1,
                     borderStyle: 'solid',
                   }}
+                  keyboardType="numeric"
                   onChangeText={(text) => this.setState({contactNo: text})}
                 />
               </View>

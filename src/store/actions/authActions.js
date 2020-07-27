@@ -25,6 +25,27 @@ export const fetchLogout = (navigationDispatch) => {
   };
 };
 
+export const updateProfile = (profileData, callback, userId) => {
+  return async (dispatch) => {
+    try {
+      database()
+        .ref(`users/${userId}`)
+        .update(profileData)
+        .then(() => {
+          callback();
+          Toast.show('Profile successfully updated!');
+        })
+        .catch((err) => {
+          callback();
+          Toast.show(err);
+        });
+    } catch (err) {
+      callback();
+      console.log(err);
+    }
+  };
+};
+
 export const uploadImage = (imageSrc, userId, callback) => {
   return async (dispatch) => {
     try {

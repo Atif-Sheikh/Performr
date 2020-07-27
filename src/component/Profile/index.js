@@ -18,10 +18,11 @@ import {
 } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 import {connect} from 'react-redux';
+import Toast from 'react-native-simple-toast';
 
 import * as authActions from '../../store/actions/authActions';
 import Header from '../Header';
-import { Loader } from '..';
+import {Loader} from '..';
 
 const {height: screenHeight, width: screenWidth} = Dimensions.get('window');
 
@@ -34,8 +35,9 @@ class Profile extends Component {
       photo: props.userMeta.thumbnail,
       number: props.userMeta.contactNo,
       address: props.userMeta.address,
-    
-      imageUploading: false
+
+      imageUploading: false,
+      updateProfileLoader: false,
     };
   }
 
@@ -50,7 +52,6 @@ class Profile extends Component {
     };
 
     ImagePicker.showImagePicker(options, (response) => {
-
       if (response.didCancel) {
         console.log('User cancelled photo picker');
       } else if (response.error) {
@@ -66,17 +67,35 @@ class Profile extends Component {
         this.setState(
           {
             photo: source.uri,
-            imageUploading: true
+            imageUploading: true,
           },
           () => {
-            this.props.uploadPhoto(source.uri, this.props.userId, callback = () => this.setState({ imageUploading: false }));
+            this.props.uploadPhoto(
+              source.uri,
+              this.props.userId,
+              (callback = () => this.setState({imageUploading: false})),
+            );
           },
         );
       }
     });
   };
 
-  update = () => {};
+  updateProfile = () => {
+    const {name, photo, number, address} = this.state;
+    const {updateProfile, userId} = this.props;
+
+    if (name && photo && number && address) {
+      this.setState({updateProfileLoader: true});
+      updateProfile(
+        {displayName: name, contactNo: number, address},
+        (callback = () => this.setState({updateProfileLoader: false})),
+        userId,
+      );
+    } else {
+      Toast.show('Please enter all the details!');
+    }
+  };
 
   _focusNextField = (nextField) => {
     this.refs[nextField]._root.focus();
@@ -84,7 +103,7 @@ class Profile extends Component {
 
   render() {
     const {navigation, fetchLogout} = this.props;
-    const { imageUploading } = this.state;
+    const {imageUploading, updateProfileLoader} = this.state;
 
     return (
       <Container>
@@ -97,31 +116,29 @@ class Profile extends Component {
             height: screenHeight / 5,
             backgroundColor: '#1d7488',
           }}>
-            {
-              imageUploading
-              ?
-              <Loader />
-              :
-              <TouchableOpacity
-                onPress={this.imagepicker}
-                style={{height: 120, width: 120, borderRadius: 60}}>
-                <Thumbnail
-                  resizeMode="cover"
-                  source={
-                    this.state.photo
-                      ? {uri: this.state.photo}
-                      : require('../../assets/face.jpeg')
-                  }
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    borderWidth: 2.0,
-                    borderColor: 'grey',
-                    borderRadius: 60,
-                  }}
-                />
-              </TouchableOpacity>
-            }
+          {imageUploading ? (
+            <Loader color="#fff" />
+          ) : (
+            <TouchableOpacity
+              onPress={this.imagepicker}
+              style={{height: 120, width: 120, borderRadius: 60}}>
+              <Thumbnail
+                resizeMode="cover"
+                source={
+                  this.state.photo
+                    ? {uri: this.state.photo}
+                    : require('../../assets/face.jpeg')
+                }
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  borderWidth: 2.0,
+                  borderColor: 'grey',
+                  borderRadius: 60,
+                }}
+              />
+            </TouchableOpacity>
+          )}
           <Title style={{paddingTop: 10}}>{this.state.name}</Title>
         </View>
         <ScrollView style={{height: screenHeight / 1.6}}>
@@ -178,10 +195,11 @@ class Profile extends Component {
                     style={styles.inputStyle}
                   />
                 </Item>
-                {this.props.loader ? (
+                {updateProfileLoader ? (
                   <Loader />
                 ) : (
                   <TouchableOpacity
+                    onPress={() => this.updateProfile()}
                     style={{
                       borderRadius: 5,
                       width: '100%',
@@ -240,7 +258,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(authActions.uploadImage(imageSrc, userId, callback)),
 
     fetchLogout: (navigationDispatch) =>
-      dispatch(authActions.fetchLogout(navigationDispatch))
+      dispatch(authActions.fetchLogout(navigationDispatch)),
+
+    updateProfile: (...args) => dispatch(authActions.updateProfile(...args)),
   };
 };
 
