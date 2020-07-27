@@ -9,7 +9,15 @@ import {Provider} from 'react-redux';
 import '@react-native-firebase/app';
 import '@react-native-firebase/auth';
 
-import {Login, Signup, Home, Post, Profile, Message} from './src/component';
+import {
+  Login,
+  Signup,
+  Home,
+  Post,
+  Profile,
+  Message,
+  Chatting,
+} from './src/component';
 
 import store from './src/store';
 
@@ -34,6 +42,7 @@ function App() {
             <Stack.Screen name="Home" component={HomeNavigator} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="Chat" component={Chatting} />
           </Stack.Navigator>
         </NavigationContainer>
       </View>

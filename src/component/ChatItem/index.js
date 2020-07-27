@@ -14,13 +14,19 @@ const {width, height} = Dimensions.get('window');
 class ChatItem extends Component {
   async _goToDetail() {
     const {navigate} = this.props.navigation;
-    const {userData, userId} = this.props;
+    const {
+      userData: {
+        item: {displayName, email, thumbnail, userType, userId},
+      },
+    } = this.props;
+
+    navigate('Chat', { displayName, userId });
   }
 
   render() {
     const {
       userData: {
-        item: {displayName, email, thumbnail},
+        item: {displayName, email, thumbnail, userType, userId},
       },
     } = this.props;
     console.log(this.props, 'PROPS');
@@ -47,7 +53,7 @@ class ChatItem extends Component {
           </View>
         </View>
         <View style={styles.dateView}>
-          <Text style={styles.dateTxt}></Text>
+            <Text style={styles.dateTxt}>{userType || "Performer"}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
   dateView: {
     flexDirection: 'row',
     position: 'absolute',
-    right: 10,
+    right: 20,
     bottom: 10,
   },
 
