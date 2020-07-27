@@ -42,7 +42,7 @@ export const uploadImage = (imageSrc, userId, callback) => {
             })
         }catch(err) {
             callback();
-            console.log(err);
+            Toast.show(err);
         } 
     };
 };
@@ -64,7 +64,6 @@ export const fetchingLoginFailure = (error) => ({
 export const fetchLogin = (data, navigate) => {
   return async (dispatch) => {
     const {email, password, callback} = data;
-    // //console.log('===== fetchLogin');
     try {
       await auth()
         .signInWithEmailAndPassword(email, password)
@@ -78,7 +77,6 @@ export const fetchLogin = (data, navigate) => {
               .ref(`users/${uid}`)
               .once('value')
               .then((snapshot) => {
-                console.log('User data: ', snapshot.val());
                 dispatch(
                   fetchingLoginSuccess({...snapshot.val(), userId: uid}),
                 );
@@ -164,7 +162,7 @@ export const fetchSignup = (data, navigate) => {
         });
     } catch (e) {
       callback();
-      console.log(e, 'RREEERR');
+      Toast.show(e);
     }
   };
 };

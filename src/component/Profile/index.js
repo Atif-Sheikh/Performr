@@ -29,10 +29,6 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      about: true,
-      photos: false,
-      friends: false,
-      pickerModal: false,
       email: props.userMeta.email,
       name: props.userMeta.displayName,
       photo: props.userMeta.thumbnail,
@@ -54,7 +50,6 @@ class Profile extends Component {
     };
 
     ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response.uri);
 
       if (response.didCancel) {
         console.log('User cancelled photo picker');
