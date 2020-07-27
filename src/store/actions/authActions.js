@@ -101,16 +101,7 @@ export const fetchLogin = (data, navigate) => {
               _user: {uid},
             },
           }) => {
-            database()
-              .ref(`users/${uid}`)
-              .once('value')
-              .then((snapshot) => {
-                dispatch(
-                  fetchingLoginSuccess({...snapshot.val(), userId: uid}),
-                );
-                callback();
-                navigate('Home');
-              });
+            getUserDetails(uid, callback, navigate);
           },
         )
         .catch((error) => {
@@ -124,6 +115,25 @@ export const fetchLogin = (data, navigate) => {
       callback();
     }
   };
+};
+
+export const getUserDetails = (uid, callback = () => {}, navigate = () => {}) => {
+    return async (dispatch) => {
+        try {
+            database()
+              .ref(`users/${uid}`)
+              .once('value')
+              .then((snapshot) => {
+                dispatch(
+                  fetchingLoginSuccess({...snapshot.val(), userId: uid}),
+                );
+                callback();
+                navigate('Home');
+              });
+        }catch(err) {
+            console.log(err, "ERROR");
+        } 
+    }
 };
 
 export const fetchSignup = (data, navigate) => {

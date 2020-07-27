@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import * as authActions from '../../store/actions/authActions';
 import {Header} from '../';
 import Loader from '../Loader';
+import { firebase } from '@react-native-firebase/auth';
 
 class Login extends Component {
   constructor() {
@@ -20,7 +21,16 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    SplashScreen.hide();
+    const { getUserDetails, navigation: { navigate } } = this.props;
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if(user && user._user) {
+        getUserDetails(user._user.uid, () => SplashScreen.hide(), navigate);
+      }else {
+        SplashScreen.hide();
+      }
+    });
+
   }
 
   login = async () => {
@@ -140,6 +150,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchLogin: (type, navigate) =>
       dispatch(authActions.fetchLogin(type, navigate)),
+
+    getUserDetails: (...args) =>
+      dispatch(authActions.getUserDetails(...args))
   };
 };
 
