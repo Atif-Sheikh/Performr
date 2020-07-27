@@ -55,29 +55,39 @@ export const fetchLogin = (data, navigate) => {
 
 export const fetchSignup = (data, navigate) => {
   return async (dispatch) => {
-    const {email, password, displayName, userType} = data;
+    const {email, password, displayName, selectedItem, contactNo, address, callback} = data;
     try {
       await auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(async ({user: { _user: { uid } }}) => {
-          database()
-            .ref(`users/${uid}`)
-            .set(data)
-            .then(() => {
-                navigate('Home');
+        .then(
+          async ({
+            user: {
+              _user: {uid},
+            },
+          }) => {
+            database()
+              .ref(`users/${uid}`)
+              .set({ email, password, displayName, selectedItem, contactNo, address })
+              .then(() => {
+                callback();
                 Toast.show('Successfully created user', Toast.SHORT);
-            })
-            .catch((err) => {
+                navigate('Home');
+              })
+              .catch((err) => {
+                callback();
                 Toast.show(err, Toast.SHORT);
-            })
-        })
+              });
+          },
+        )
         .catch((error) => {
+          callback();
           const {code, message} = error;
           const errorMessage = message.replace(code, '').replace('[]', '');
           Toast.show(errorMessage, Toast.SHORT);
         });
     } catch (e) {
-        console.log(e, "RREEERR")
+      callback();
+      console.log(e, 'RREEERR');
     }
   };
 };

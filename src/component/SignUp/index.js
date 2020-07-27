@@ -10,9 +10,11 @@ import {
 import {RadioGroup} from 'react-native-btr';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
+import Toast from 'react-native-simple-toast';
 
 import * as authActions from '../../store/actions/authActions';
 import Header from '../Header';
+import Loader from '../Loader';
 
 class Signup extends Component {
   constructor(props) {
@@ -46,6 +48,8 @@ class Signup extends Component {
       displayName: '',
       email: '',
       password: '',
+      contactNo: '',
+      address: '',
       loading: false,
     };
   }
@@ -56,17 +60,36 @@ class Signup extends Component {
         navigation: {navigate},
         fetchSignup,
       } = this.props;
-      const {email, password, displayName, radioButtons} = this.state;
+      const {
+        email,
+        password,
+        displayName,
+        radioButtons,
+        contactNo,
+        address,
+      } = this.state;
 
-      let selectedItem = this.state.radioButtons.find((e) => e.checked == true);
-      selectedItem = selectedItem
-        ? selectedItem.value
-        : this.state.radioButtons[0].value;
+      let selectedItem = radioButtons.find((e) => e.checked == true);
+      selectedItem = selectedItem ? selectedItem.value : radioButtons[0].value;
 
-      await fetchSignup(
-        {email, password, displayName, userType: selectedItem},
-        navigate,
-      );
+      if (email && password && displayName && contactNo && address) {
+        this.setState({loading: true});
+
+        await fetchSignup(
+          {
+            email,
+            password,
+            displayName,
+            userType: selectedItem,
+            contactNo,
+            address,
+            callback: () => this.setState({loading: false}),
+          },
+          navigate,
+        );
+      } else {
+        Toast.show('Please enter all fields!', Toast.SHORT);
+      }
     } catch (err) {
       Toast.show(err, Toast.SHORT);
     }
@@ -74,6 +97,7 @@ class Signup extends Component {
 
   render() {
     const {navigation} = this.props;
+    const {loading} = this.state;
 
     let selectedItem = this.state.radioButtons.find((e) => e.checked == true);
     selectedItem = selectedItem
@@ -138,6 +162,34 @@ class Signup extends Component {
                   onChangeText={(text) => this.setState({password: text})}
                 />
               </View>
+              <View style={{marginBottom: 15}}>
+                <TextInput
+                  placeholder="Enter contact no"
+                  style={{
+                    fontSize: 15,
+                    borderColor: 'black',
+                    padding: 10,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                  }}
+                  onChangeText={(text) => this.setState({contactNo: text})}
+                />
+              </View>
+              <View style={{marginBottom: 15}}>
+                <TextInput
+                  placeholder="Enter address"
+                  style={{
+                    fontSize: 15,
+                    borderColor: 'black',
+                    padding: 10,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                  }}
+                  onChangeText={(text) => this.setState({address: text})}
+                />
+              </View>
               <View>
                 <RadioGroup
                   color="#1d7488"
@@ -163,17 +215,21 @@ class Signup extends Component {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={this.signup}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#1d7488',
-                  borderRadius: 50,
-                  padding: 10,
-                }}>
-                <Text style={{color: '#fff'}}>SIGN UP</Text>
-              </TouchableOpacity>
+              {loading ? (
+                <Loader />
+              ) : (
+                <TouchableOpacity
+                  onPress={this.signup}
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#1d7488',
+                    borderRadius: 50,
+                    padding: 10,
+                  }}>
+                  <Text style={{color: '#fff'}}>SIGN UP</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </ScrollView>
