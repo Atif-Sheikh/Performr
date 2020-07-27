@@ -10,6 +10,7 @@ import {
 import {RadioGroup} from 'react-native-btr';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-simple-toast';
 
 import Header from '../Header';
 
@@ -56,7 +57,6 @@ class Signup extends Component {
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(async (user) => {
-          console.log(user, 'USer');
           if (user) {
             navigation.navigate('Home');
           } else {
@@ -64,11 +64,12 @@ class Signup extends Component {
           }
         })
         .catch((error) => {
-          console.log(error);
+          const {code, message} = error;
+          const errorMessage = message.replace(code, '').replace('[]', '');
+          Toast.show(errorMessage, Toast.SHORT);
         });
     } catch (err) {
-      console.log(err);
-      alert(err);
+      Toast.show(err, Toast.SHORT);
     }
   };
 

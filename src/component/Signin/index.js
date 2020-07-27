@@ -3,6 +3,7 @@ import {View, Text, SafeAreaView, ScrollView, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SplashScreen from 'react-native-splash-screen';
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-simple-toast';
 
 import {Header} from '../';
 
@@ -34,11 +35,12 @@ class Login extends Component {
           }
         })
         .catch((error) => {
-          console.log(error);
+          const {code, message} = error;
+          const errorMessage = message.replace(code, '').replace('[]', '');
+          Toast.show(errorMessage, Toast.SHORT);
         });
     } catch (err) {
-      console.log(err);
-      alert(err);
+      Toast.show(err, Toast.SHORT);
     }
   };
 
