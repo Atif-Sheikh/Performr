@@ -83,7 +83,7 @@ class Profile extends Component {
   };
 
   render() {
-    const {navigation} = this.props;
+    const {navigation, fetchLogout} = this.props;
     const { imageUploading } = this.state;
 
     return (
@@ -194,7 +194,7 @@ class Profile extends Component {
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('Login')}
+                  onPress={() => fetchLogout(navigation.dispatch)}
                   style={{
                     borderRadius: 5,
                     width: '100%',
@@ -238,6 +238,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     uploadPhoto: (imageSrc, userId, callback) =>
       dispatch(authActions.uploadImage(imageSrc, userId, callback)),
+
+    fetchLogout: (navigationDispatch) =>
+      dispatch(authActions.fetchLogout(navigationDispatch))
   };
 };
 

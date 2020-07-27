@@ -3,14 +3,21 @@ import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import firebase from '@react-native-firebase/app';
 import Toast from 'react-native-simple-toast';
+import {CommonActions} from '@react-navigation/native';
 
 import * as TYPES from '../constants';
 
-export const fetchLogout = () => {
+export const fetchLogout = (navigationDispatch) => {
   return async (dispatch) => {
-    NavigationService.navigateAndReset('Login');
-    dispatch(R_logout());
     try {
+      const resetAction = CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
+
+      navigationDispatch(resetAction);
+      dispatch(R_logout());
+
       await auth().signOut();
     } catch (e) {
       dispatch(isLoading(false));
@@ -19,32 +26,32 @@ export const fetchLogout = () => {
 };
 
 export const uploadImage = (imageSrc, userId, callback) => {
-    return async (dispatch) => {
-        try {
-            const sessionId = `images-${new Date().getTime()}`;
-            const imageRef = firebase.storage().ref(sessionId);
-            imageRef.putFile(imageSrc).then(async () => {
-                let downloadUrl = await imageRef.getDownloadURL();
-                
-                database()
-                .ref(`users/${userId}`)
-                .update({
-                    thumbnail: downloadUrl,
-                })
-                .then(() => {
-                    callback();
-                    Toast.show('Profile Picture successfull updated!');
-                })
-                .catch((err) => {
-                    callback()
-                    Toast.show(err);
-                })
-            })
-        }catch(err) {
+  return async (dispatch) => {
+    try {
+      const sessionId = `images-${new Date().getTime()}`;
+      const imageRef = firebase.storage().ref(sessionId);
+      imageRef.putFile(imageSrc).then(async () => {
+        let downloadUrl = await imageRef.getDownloadURL();
+
+        database()
+          .ref(`users/${userId}`)
+          .update({
+            thumbnail: downloadUrl,
+          })
+          .then(() => {
+            callback();
+            Toast.show('Profile Picture successfull updated!');
+          })
+          .catch((err) => {
             callback();
             Toast.show(err);
-        } 
-    };
+          });
+      });
+    } catch (err) {
+      callback();
+      Toast.show(err);
+    }
+  };
 };
 
 export const fetchingLoginRequest = () => ({
