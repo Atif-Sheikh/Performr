@@ -73,8 +73,8 @@ class Chatting extends React.Component {
       time: Date.now(),
     };
     await firebase.database().ref(`chats/${path}`).push(obj);
+    this.setState({currentMsg: ''});
     Keyboard.dismiss();
-    this.setState({message: ''});
   };
 
   render() {
