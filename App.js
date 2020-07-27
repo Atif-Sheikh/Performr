@@ -4,11 +4,14 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon, View} from 'native-base';
+import {Provider} from 'react-redux';
 
 import '@react-native-firebase/app';
-import'@react-native-firebase/auth';
+import '@react-native-firebase/auth';
 
 import {Login, Signup, Home, Post, Profile, Message} from './src/component';
+
+import store from './src/store';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,19 +23,21 @@ function App() {
   Platform.OS === 'android' && StatusBar.setBackgroundColor('#1d7488');
 
   return (
-    <View style={{flex: 1}}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-          initialRouteName="Login">
-          <Stack.Screen name="Home" component={HomeNavigator} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Signup" component={Signup} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </View>
+    <Provider store={store}>
+      <View style={{flex: 1}}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+            initialRouteName="Login">
+            <Stack.Screen name="Home" component={HomeNavigator} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    </Provider>
   );
 }
 
