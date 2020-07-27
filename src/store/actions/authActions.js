@@ -10,15 +10,15 @@ import * as TYPES from '../constants';
 export const fetchLogout = (navigationDispatch) => {
   return async (dispatch) => {
     try {
+      dispatch(R_logout());
+      await auth().signOut();
       const resetAction = CommonActions.reset({
         index: 0,
         routes: [{name: 'Login'}],
       });
 
       navigationDispatch(resetAction);
-      dispatch(R_logout());
 
-      await auth().signOut();
     } catch (e) {
       dispatch(isLoading(false));
     }
@@ -117,23 +117,25 @@ export const fetchLogin = (data, navigate) => {
   };
 };
 
-export const getUserDetails = (uid, callback = () => {}, navigate = () => {}) => {
-    return async (dispatch) => {
-        try {
-            database()
-              .ref(`users/${uid}`)
-              .once('value')
-              .then((snapshot) => {
-                dispatch(
-                  fetchingLoginSuccess({...snapshot.val(), userId: uid}),
-                );
-                callback();
-                navigate('Home');
-              });
-        }catch(err) {
-            console.log(err, "ERROR");
-        } 
+export const getUserDetails = (
+  uid,
+  callback = () => {},
+  navigate = () => {},
+) => {
+  return async (dispatch) => {
+    try {
+      database()
+        .ref(`users/${uid}`)
+        .once('value')
+        .then((snapshot) => {
+          dispatch(fetchingLoginSuccess({...snapshot.val(), userId: uid}));
+          callback();
+          navigate('Home');
+        });
+    } catch (err) {
+      console.log(err, 'ERROR');
     }
+  };
 };
 
 export const fetchSignup = (data, navigate) => {
@@ -167,6 +169,7 @@ export const fetchSignup = (data, navigate) => {
                 contactNo,
                 address,
                 thumbnail,
+                userId: uid
               })
               .then(() => {
                 dispatch(
