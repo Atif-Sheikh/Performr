@@ -129,8 +129,8 @@ export const getUserDetails = (
         .once('value')
         .then((snapshot) => {
           dispatch(fetchingLoginSuccess({...snapshot.val(), userId: uid}));
-          callback();
           navigate('Home');
+          callback();
         });
     } catch (err) {
       console.log(err, 'ERROR');
