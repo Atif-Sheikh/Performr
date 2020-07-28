@@ -12,12 +12,16 @@ export default function Home({navigation}) {
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date());
   const [posts, setPosts] = useState([]);
-  const [maipng, setMapping] = useState(false);
+  const [isRefreshing, setisRefreshing] = useState(false);
   const [sortBy, setSortBy] = useState();
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    let uid = auth().currentUser.uid;
+    getData();
+  }, [sortBy, showAll]);
+
+  const getData = () => {
+    setisRefreshing(true);
     database()
       .ref('posts')
       .on('value', (data) => {
@@ -35,9 +39,10 @@ export default function Home({navigation}) {
             }
           }
         }
+        setisRefreshing(false);
         setPosts(arr);
       });
-  }, [sortBy, showAll]);
+  };
 
   const onChange = (event, selectedDate) => {
     setShow(false);
@@ -128,7 +133,12 @@ export default function Home({navigation}) {
           </TouchableOpacity>
         </View>
         <View>
-          <FlatList data={posts} renderItem={renderItem} />
+          <FlatList
+            refreshing={isRefreshing}
+            data={posts}
+            renderItem={renderItem}
+            onRefresh={getData}
+          />
 
           {show && (
             <DateTimePicker
