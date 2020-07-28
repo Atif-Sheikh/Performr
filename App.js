@@ -75,6 +75,7 @@ function HomeNavigator() {
       tabBarOptions={{
         activeTintColor: '#1d7488',
         inactiveTintColor: 'gray',
+        // showLabel: false
       }}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Post" component={Post} />
