@@ -24,7 +24,7 @@ import store from './src/store';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// console.disableYellowBox = true;
+console.disableYellowBox = true;
 
 function App() {
   Platform.OS === 'android' && StatusBar.setBarStyle('light-content', true);
