@@ -2,6 +2,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import firebase from '@react-native-firebase/app';
+import messaging from '@react-native-firebase/messaging';
 import Toast from 'react-native-simple-toast';
 import {CommonActions} from '@react-navigation/native';
 
@@ -18,7 +19,6 @@ export const fetchLogout = (navigationDispatch) => {
       });
 
       navigationDispatch(resetAction);
-
     } catch (e) {
       dispatch(isLoading(false));
     }
@@ -101,6 +101,8 @@ export const fetchLogin = (data, navigate) => {
               _user: {uid},
             },
           }) => {
+            const fcmToken = await messaging().getToken();
+            await database().ref(`users/${uid}`).update({fcmToken});
             getUserDetails(uid, callback, navigate);
           },
         )
@@ -124,6 +126,8 @@ export const getUserDetails = (
 ) => {
   return async (dispatch) => {
     try {
+      const fcmToken = await messaging().getToken();
+      await database().ref(`users/${uid}`).update({fcmToken});
       database()
         .ref(`users/${uid}`)
         .once('value')
@@ -159,6 +163,7 @@ export const fetchSignup = (data, navigate) => {
               _user: {uid},
             },
           }) => {
+            const fcmToken = await messaging().getToken();
             database()
               .ref(`users/${uid}`)
               .set({
@@ -169,7 +174,8 @@ export const fetchSignup = (data, navigate) => {
                 contactNo,
                 address,
                 thumbnail,
-                userId: uid
+                userId: uid,
+                fcmToken,
               })
               .then(() => {
                 dispatch(
